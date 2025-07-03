@@ -10,7 +10,6 @@ plugins {
 
 val newsApiKey: String = project.findProperty("NEWS_API_KEY") as? String ?: ""
 
-
 android {
     namespace = "com.telesoftas.newsapp"
     compileSdk = 35
