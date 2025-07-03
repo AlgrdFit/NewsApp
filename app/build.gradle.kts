@@ -8,6 +8,9 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
 }
 
+val newsApiKey: String = project.findProperty("NEWS_API_KEY") as? String ?: ""
+
+
 android {
     namespace = "com.telesoftas.newsapp"
     compileSdk = 35
@@ -20,6 +23,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "NEWS_API_KEY", "\"$newsApiKey\"")
     }
 
     buildTypes {
@@ -41,6 +46,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
