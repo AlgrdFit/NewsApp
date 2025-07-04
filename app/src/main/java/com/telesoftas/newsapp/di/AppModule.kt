@@ -1,6 +1,8 @@
 package com.telesoftas.newsapp.di
 
-import com.telesoftas.newsapp.data.networking.Api
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.telesoftas.newsapp.data.networking.api.Api
 import com.telesoftas.newsapp.data.networking.interceptor.AuthInterceptor
 import dagger.Module
 import dagger.Provides
@@ -18,6 +20,14 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+    }
+
+    @Provides
+    @Singleton
     fun provideAuthInterceptor(): AuthInterceptor {
         return AuthInterceptor()
     }
@@ -27,19 +37,25 @@ object AppModule {
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor
     ): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
-            .addInterceptor(HttpLoggingInterceptor())
+            .addInterceptor(loggingInterceptor)
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideApi(client: OkHttpClient): Api {
+    fun provideApi(
+        client: OkHttpClient,
+        moshi: Moshi,
+    ): Api {
         return Retrofit.Builder()
             .baseUrl("https://newsapi.org")
             .client(client)
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create(Api::class.java)
     }
