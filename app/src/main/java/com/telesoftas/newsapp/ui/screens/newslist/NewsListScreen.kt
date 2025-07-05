@@ -19,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.telesoftas.newsapp.ui.Screen
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 
@@ -26,6 +28,7 @@ import kotlinx.coroutines.flow.filterNotNull
 @Composable
 fun NewsListScreen(
     modifier: Modifier,
+    navController: NavController,
     viewModel: NewsListViewModel = hiltViewModel(),
     onSnackbar: (String) -> Unit = {},
 ) {
@@ -42,7 +45,7 @@ fun NewsListScreen(
         LazyColumn(modifier = Modifier.fillMaxSize(), state = listState) {
             items(state.articles) { article ->
                 NewsListItem(article = article, onClick = {
-                    //TODO navigate to NewsDetailsScreen
+                    navController.navigate(Screen.NewsDetails(article))
                 })
             }
             if (state.articles.isNotEmpty() && state.isLoading) {
