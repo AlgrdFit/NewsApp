@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -8,7 +11,15 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
 }
 
-val newsApiKey: String = project.findProperty("NEWS_API_KEY") as? String ?: ""
+fun getApiKey(propertyKey: String): String {
+    val properties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        properties.load(FileInputStream(localPropertiesFile))
+        return properties.getProperty(propertyKey, "")
+    }
+    return ""
+}
 
 android {
     namespace = "com.telesoftas.newsapp"
@@ -23,7 +34,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "NEWS_API_KEY", "\"$newsApiKey\"")
+        buildConfigField("String", "NEWS_API_KEY", "\"${getApiKey("NEWS_API_KEY")}\"")
     }
 
     buildTypes {
@@ -79,8 +90,17 @@ dependencies {
     //Api
     implementation(libs.retrofit)
     implementation(libs.moshi.converter)
+    implementation(libs.moshi.kotlin)
     implementation(libs.okhttp.logging.interceptor)
 
     //services
     implementation(libs.firebase.messaging)
+
+    //image display
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
+    //testing
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
