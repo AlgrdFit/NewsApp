@@ -17,7 +17,6 @@ import javax.inject.Inject
 class NewsListViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
-
     private val _event = MutableSharedFlow<NewsListEvent>()
     val event = _event.asSharedFlow()
 

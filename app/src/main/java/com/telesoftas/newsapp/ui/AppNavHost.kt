@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import com.telesoftas.newsapp.data.networking.response.Article
 import com.telesoftas.newsapp.ui.screens.newsdetails.NewsDetailsScreen
 import com.telesoftas.newsapp.ui.screens.newslist.NewsListScreen
+import com.telesoftas.newsapp.ui.screens.webview.WebViewScreen
 import ektif.detectionreaction.utils.GenericNavType
 import kotlinx.serialization.Serializable
 import kotlin.reflect.typeOf
@@ -20,6 +21,9 @@ sealed class Screen {
 
     @Serializable
     data class NewsDetails(val article: Article) : Screen()
+
+    @Serializable
+    data class WebView(val url: String) : Screen()
 }
 
 @Composable
@@ -48,6 +52,13 @@ fun AppNavHost(
             val args = backStackEntry.toRoute<Screen.NewsDetails>()
             NewsDetailsScreen(
                 article = args.article,
+                navController = navController,
+            )
+        }
+        composable<Screen.WebView> { backStackEntry ->
+            val args = backStackEntry.toRoute<Screen.WebView>()
+            WebViewScreen(
+                url = args.url,
             )
         }
     }
