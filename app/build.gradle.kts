@@ -90,8 +90,17 @@ dependencies {
     //Api
     implementation(libs.retrofit)
     implementation(libs.moshi.converter)
+    implementation(libs.moshi.kotlin)
     implementation(libs.okhttp.logging.interceptor)
 
     //services
     implementation(libs.firebase.messaging)
+
+    //image display
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
+    //testing
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
