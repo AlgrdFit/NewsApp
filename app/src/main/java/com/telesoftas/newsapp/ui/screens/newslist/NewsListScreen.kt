@@ -32,7 +32,6 @@ fun NewsListScreen(
     viewModel: NewsListViewModel = hiltViewModel(),
     onSnackbar: (String) -> Unit = {},
 ) {
-
     val state by viewModel.state.collectAsState()
     val event by viewModel.event.collectAsState(initial = null)
     val listState = rememberLazyListState()
