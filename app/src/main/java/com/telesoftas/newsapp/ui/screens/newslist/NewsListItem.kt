@@ -2,14 +2,13 @@ package com.telesoftas.newsapp.ui.screens.newslist
 
 import android.R
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -32,49 +31,50 @@ fun NewsListItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .height(200.dp)
             .padding(8.dp)
             .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Row(modifier = Modifier.padding(8.dp)) {
-            AsyncImage(
-                model = article.urlToImage,
-                placeholder = painterResource(R.drawable.ic_menu_gallery),
-                error = painterResource(R.drawable.ic_menu_gallery),
-                contentDescription = article.title,
+            Column(
                 modifier = Modifier
-                    .size(100.dp)
-                    .aspectRatio(1f)
+                    .weight(0.90f)
+                    .fillMaxHeight()
                     .align(Alignment.CenterVertically),
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
+            ) {
+                AsyncImage(
+                    model = article.urlToImage,
+                    placeholder = painterResource(R.drawable.ic_menu_gallery),
+                    error = painterResource(R.drawable.ic_menu_gallery),
+                    contentDescription = article.title,
+                    modifier = Modifier.fillMaxHeight(),
+                    contentScale = ContentScale.Fit,
+                )
+            }
 
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .align(Alignment.CenterVertically)
+                    .fillMaxHeight()
+                    .align(Alignment.CenterVertically),
+                verticalArrangement = Arrangement.SpaceEvenly,
             ) {
                 Text(
                     text = article.title.orEmpty(),
                     style = MaterialTheme.typography.titleMedium,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Text(
-                    text = article.description.orEmpty(),
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .weight(1f),
                 )
 
                 Text(
                     text = article.publishedAt.orEmpty(),
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(top = 4.dp)
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(8.dp),
                 )
             }
         }

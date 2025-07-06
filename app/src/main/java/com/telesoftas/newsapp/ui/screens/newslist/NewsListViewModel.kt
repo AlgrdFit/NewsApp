@@ -3,7 +3,9 @@ package com.telesoftas.newsapp.ui.screens.newslist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.telesoftas.newsapp.data.networking.request.TopHeadlinesParams
+import com.telesoftas.newsapp.data.networking.response.Article
 import com.telesoftas.newsapp.data.repository.Repository
+import com.telesoftas.newsapp.utlis.DateFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewsListViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: Repository,
+    private val dateFormatter: DateFormatter,
 ) : ViewModel() {
     private val _event = MutableSharedFlow<NewsListEvent>()
     val event = _event.asSharedFlow()
@@ -40,7 +43,8 @@ class NewsListViewModel @Inject constructor(
             try {
                 val response = repository.getTopHeadlines(TopHeadlinesParams(page = currentPage))
                 if (response.isSuccessful) {
-                    val articles = response.body()?.articles.orEmpty()
+                    val articlesResponse = response.body()?.articles.orEmpty()
+                    val articles = formatArticles(articlesResponse)
                     _state.update {
                         it.copy(
                             articles = it.articles + articles,
@@ -61,6 +65,14 @@ class NewsListViewModel @Inject constructor(
             } finally {
                 isLoadingMore = false
             }
+        }
+    }
+
+    private fun formatArticles(articles: List<Article>): List<Article> {
+        return articles.map { article ->
+            article.copy(
+                publishedAt = dateFormatter.formatDate(article.publishedAt.orEmpty())
+            )
         }
     }
 
