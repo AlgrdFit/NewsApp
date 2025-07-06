@@ -5,6 +5,7 @@ import com.telesoftas.newsapp.data.networking.response.Source
 import com.telesoftas.newsapp.data.networking.response.TopHeadlinesResponse
 import com.telesoftas.newsapp.data.repository.Repository
 import com.telesoftas.newsapp.rules.MainDispatcherRule
+import com.telesoftas.newsapp.utlis.DateFormatter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -32,17 +33,24 @@ class NewsListViewModelTest {
         publishedAt = "publishedAt",
         content = "content"
     )
+    private val formattedDate = "formatted"
     private val response = Response.success(
         TopHeadlinesResponse(articles = listOf(article))
     )
     private val defaultRepository: Repository = mockk {
         coEvery { getTopHeadlines(any()) } returns response
     }
+    private val dateFormatter: DateFormatter = mockk {
+        every { formatDate(any()) } returns formattedDate
+    }
 
     @Test
     fun onEndOfList_repositoryCalled_StateUpdated() = runTest {
         //arrange
-        val articles = listOf(article, article)
+        val articles = listOf(
+            article.copy(publishedAt = formattedDate),
+            article.copy(publishedAt = formattedDate),
+        )
         val fixture = fixture()
 
         //act
@@ -94,7 +102,7 @@ class NewsListViewModelTest {
     @Test
     fun onRefresh_repositoryCalled_StateUpdated() = runTest {
         //arrange
-        val stateValue = NewsListState(articles = listOf(article))
+        val stateValue = NewsListState(articles = listOf(article.copy(publishedAt = formattedDate)))
         val fixture = fixture()
 
         //act
@@ -145,6 +153,7 @@ class NewsListViewModelTest {
 
 
     private fun fixture(repository: Repository = defaultRepository) = NewsListViewModel(
-        repository = repository
+        repository = repository,
+        dateFormatter = dateFormatter,
     )
 }

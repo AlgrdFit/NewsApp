@@ -54,7 +54,7 @@ fun NewsDetailsScreen(
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 modifier = Modifier.align(Alignment.End),
